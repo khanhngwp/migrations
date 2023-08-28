@@ -46,6 +46,7 @@ class MigrateCommand extends AbstractCommand
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Execute the migration as a dry run.')
             ->addOption('query-time', null, InputOption::VALUE_NONE, 'Time all the queries individually.')
             ->addOption('allow-no-migration', null, InputOption::VALUE_NONE, 'Don\'t throw an exception if no migration is available (CI).')
+            ->addOption('all-or-nothing', null, InputOption::VALUE_OPTIONAL, 'Wrap the entire migration in a transaction.', false)
             ->setHelp(<<<EOT
 The <info>%command.name%</info> command executes a migration to a specified version or the latest available version:
 
@@ -74,6 +75,8 @@ Or you can also execute the migration without a warning message which you need t
 You can also time all the different queries if you wanna know which one is taking so long:
 
     <info>%command.full_name% --query-time</info>
+
+Use the --all-or-nothing option to wrap the entire migration in a transaction.
 EOT
         );
 

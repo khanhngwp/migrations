@@ -170,12 +170,32 @@ class Migration
             throw MigrationException::noMigrationsToExecute();
         }
 
+        $connection = $this->configuration->getConnection();
+        $allOrNothing = $this->configuration->isAllOrNothing();
+
         $sql = [];
         $time = 0;
-        foreach ($migrationsToExecute as $version) {
-            $versionSql = $version->execute($direction, $dryRun, $timeAllQueries);
-            $sql[$version->getVersion()] = $versionSql;
-            $time += $version->getTime();
+
+        if ($allOrNothing) {
+            $connection->beginTransaction();
+        }
+
+        try {
+            foreach ($migrationsToExecute as $version) {
+                $versionSql = $version->execute($direction, $dryRun, $timeAllQueries);
+                $sql[$version->getVersion()] = $versionSql;
+                $time += $version->getTime();
+            }
+        } catch (\Throwable $e) {
+            if ($allOrNothing) {
+                $connection->rollBack();
+            }
+
+            throw $e;
+        }
+
+        if ($allOrNothing) {
+            $connection->commit();
         }
 
         $this->outputWriter->write("\n  <comment>------------------------</comment>\n");

@@ -139,6 +139,9 @@ class Configuration
      */
     private $migrationsAreOrganizedByYearAndMonth = false;
 
+    /** @var bool */
+    private $allOrNothing = false;
+
     /**
      * Construct a migration configuration object.
      *
@@ -629,6 +632,16 @@ class Configuration
             default:
                 return null;
         }
+    }
+
+    public function setAllOrNothing(bool $allOrNothing) : void
+    {
+        $this->allOrNothing = $allOrNothing;
+    }
+
+    public function isAllOrNothing() : bool
+    {
+        return $this->allOrNothing;
     }
 
     /**
