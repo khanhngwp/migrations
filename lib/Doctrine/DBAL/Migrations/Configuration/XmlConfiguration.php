@@ -20,6 +20,7 @@
 namespace Doctrine\DBAL\Migrations\Configuration;
 
 use Doctrine\DBAL\Migrations\MigrationException;
+use Doctrine\Migrations\Tools\BooleanStringFormatter;
 
 /**
  * Load migration configuration information from a XML configuration file.
@@ -61,6 +62,12 @@ class XmlConfiguration extends AbstractFileConfiguration
         }
         if (isset($xml->{'migrations-directory'})) {
             $config['migrations_directory'] = $this->getDirectoryRelativeToFile($file, (string) $xml->{'migrations-directory'});
+        }
+        if (isset($xml->{'all-or-nothing'})) {
+            $config['all_or_nothing'] = BooleanStringFormatter::toBoolean(
+                (string) $xml->{'all-or-nothing'},
+                false
+            );
         }
         if (isset($xml->migrations->migration)) {
             $config['migrations'] = $xml->migrations->migration;
